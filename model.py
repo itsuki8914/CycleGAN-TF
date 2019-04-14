@@ -1,7 +1,7 @@
 
 import tensorflow as tf
 
-REGULARIZER_COF = 1e-5
+REGULARIZER_COF = 1e-6
 
 def _instance_norm(input, name="instance_norm"):
     with tf.variable_scope(name):
