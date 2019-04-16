@@ -12,6 +12,8 @@ MODEL_DIR = "model"
 OUT_DIR_A2B = "outA2B"
 OUT_DIR_B2A = "outB2A"
 def main(folder=["testA","testB"]):
+
+    img_size = 256
     if not os.path.exists(OUT_DIR_A2B):
         os.makedirs(OUT_DIR_A2B)
     if not os.path.exists(OUT_DIR_B2A):
@@ -23,10 +25,10 @@ def main(folder=["testA","testB"]):
 
     start = time.time()
 
-    a = tf.placeholder(tf.float32, [None, None, None, 3])
-    b = tf.placeholder(tf.float32, [None, None, None, 3])
-    a2b = buildGenerator(a, reuse=False, nBatch=bs, name="genA2B")
-    b2a = buildGenerator(b, reuse=False, nBatch=bs, name="genB2A")
+    a = tf.placeholder(tf.float32, [1, img_size, img_size, 3])
+    b = tf.placeholder(tf.float32, [1, img_size, img_size, 3])
+    a2b = buildGenerator(a, reuse=False, name="genA2B")
+    b2a = buildGenerator(b, reuse=False, name="genB2A")
 
     sess = tf.Session()
     saver = tf.train.Saver()
@@ -58,10 +60,12 @@ def main(folder=["testA","testB"]):
         img = (img-127.5)/127.5
         h,w = img.shape[:2]
 
-        input= img.reshape(1,h,w,3)
+        input = cv2.resize(img,(img_size,img_size))
+        input= input.reshape(1,img_size,img_size,3)
 
         out = sess.run(a2b,feed_dict={a:input})
-        out = out.reshape(h,w,3)
+        out = out.reshape(img_size,img_size,3)
+        out = cv2.resize(out,(w,h))
         image_name = os.path.splitext(os.path.basename(img_path))[0]
         denorm_o = (out + 1) * 127.5
         cv2.imwrite(OUT_DIR_A2B+os.sep+'predicted' + image_name + '.png', denorm_o)
@@ -73,10 +77,12 @@ def main(folder=["testA","testB"]):
         img = (img-127.5)/127.5
         h,w = img.shape[:2]
 
-        input= img.reshape(1,h,w,3)
+        input = cv2.resize(img,(img_size,img_size))
+        input= input.reshape(1,img_size,img_size,3)
 
         out = sess.run(b2a,feed_dict={b:input})
-        out = out.reshape(h,w,3)
+        out = out.reshape(img_size,img_size,3)
+        out = cv2.resize(out,(w,h))
         image_name = os.path.splitext(os.path.basename(img_path))[0]
         denorm_o = (out + 1) * 127.5
         cv2.imwrite(OUT_DIR_B2A+os.sep+'predicted' + image_name + '.png', denorm_o)

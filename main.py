@@ -163,7 +163,6 @@ def main():
 
     print("%.3f sec took initializing"%(time.time()-start))
 
-
     a2b_hist = []
     b2a_hist = []
     da_hist = []
@@ -186,28 +185,15 @@ def main():
             b: batch_images_b,
             lr: trans_lr
         })
-        """
-        tmp, dis_lossB =sess.run([disB_opt,disB_loss], feed_dict={
-            a: batch_images_a,
-            b: batch_images_b,
-            lr: trans_lr
-        })
-        """
+
         tmp, tmp, gen_lossA2B, gen_lossB2A = \
             sess.run([genA2B_opt,genB2A_opt,genA2B_loss,genB2A_loss], feed_dict={
             a: batch_images_a,
             b: batch_images_b,
             lr: trans_lr
         })
-        """
-        tmp, gen_lossB2A =sess.run([genB2A_opt,genB2A_loss], feed_dict={
-            a: batch_images_a,
-            b: batch_images_b,
-            lr: trans_lr
-        })
-        """
-        trans_lr = trans_lr * 0.99999
 
+        trans_lr = trans_lr * 0.99998
 
         print("in step %s, disA_loss = %.3f, disB_loss = %.3f, genA2B_loss = %.3f, genB2A_loss = %.3f"
             %(i,dis_lossA,dis_lossB, gen_lossA2B, gen_lossB2A))

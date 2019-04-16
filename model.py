@@ -1,7 +1,7 @@
 
 import tensorflow as tf
 
-REGULARIZER_COF = 1e-6
+REGULARIZER_COF = 1e-8
 
 def _instance_norm(input, name="instance_norm"):
     with tf.variable_scope(name):
@@ -102,10 +102,6 @@ def buildGenerator(x,reuse=False,isTraining=True,nBatch=64,ksize=4,resBlock=9,na
         #h = _conv_layer(h, 128, 128, 1, ksize, "3-1e_g")
         h = _conv_layer(h, 128, 256, 2, ksize, "2-2e_g")
 
-        h = _conv_layer(h, 256, 256, 2, ksize, "3-2e_g")
-
-        #tmp = h
-
         for i in range(resBlock):
             conv_w, conv_b = _conv_variable([ksize,ksize,256,256],name="res%s-1" % i)
             nn = _conv2d(h,conv_w,stride=1) + conv_b
@@ -118,10 +114,6 @@ def buildGenerator(x,reuse=False,isTraining=True,nBatch=64,ksize=4,resBlock=9,na
             nn = tf.math.add(h,nn, name="resadd%s" % i)
             h = nn
 
-        #h = _conv_layer(h, 256, 256, 1, ksize, "3-1d_g")
-        #h = tf.math.add(h,tmp, name="add3")
-
-        h = _deconv_layer(h, 256, 256, 2, ksize, "3-2d_g")
 
         h = _deconv_layer(h, 256, 128, 2, ksize, "2-2d_g")
         #h = _conv_layer(h, 128, 128, 1, ksize, "2-1_g")
