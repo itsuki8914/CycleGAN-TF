@@ -47,3 +47,11 @@ To Validate
 ```
 python test.py valA valB
 ```
+
+## Result examples
+upper left: inputA
+upper right: converted AtoB
+under left: inputB
+under right; converted BtoA
+
+<img src = 'examples/horse2zebra.png' width = '400px'>
