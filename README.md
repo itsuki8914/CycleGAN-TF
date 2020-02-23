@@ -45,7 +45,7 @@ python main.py
 To Validate
 
 ```
-python test.py valA valB
+python pred.py valA valB
 ```
 
 ## Result examples
